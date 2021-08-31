@@ -1,8 +1,9 @@
 export interface IApiConfig {
     baseURL: string,
-    headers: Function,
+    headers?: Function,
     credentials?: CredentialsOption,
-    cors?: CorsOption
+    cors?: CorsOption,
+    returnBody?: boolean
 }
 
 export interface IApiWrapper {

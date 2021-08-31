@@ -1,6 +1,12 @@
-import { IApiConfig, IApiWrapper, CorsOption, Method, CredentialsOption } from "./types";
+import { 
+    IApiConfig, 
+    IApiWrapper, 
+    CorsOption, 
+    Method, 
+    CredentialsOption 
+} from "./types";
 
-export default class ApiWrapper implements IApiWrapper {
+class ApiWrapper implements IApiWrapper {
     config: IApiConfig;
 
     constructor(config?: IApiConfig) {
@@ -9,6 +15,7 @@ export default class ApiWrapper implements IApiWrapper {
             headers: () => [['Content-Type', 'application/json']],
             cors: CorsOption.Cors,
             credentials: CredentialsOption.Omit,
+            returnBody: true,
             ...config
         }
     }
@@ -20,16 +27,20 @@ export default class ApiWrapper implements IApiWrapper {
      * @param data Request body
      */
     request(url: string, method: Method, data: any) {
-        return new Promise((resolve, reject) => {
-
-            fetch(this.config.baseURL + url, {
-                headers: this.config.headers(),
+        return new Promise(async (resolve, reject) => {
+            return fetch(this.config.baseURL + url, {
+                headers: this.config.headers && this.config.headers(),
                 method,
                 mode: this.config.cors,
                 credentials: this.config.credentials
-            }).then(res => {
-
-            });
+            })
+                .then((res: Response) => {
+                    let resolution = (res.status >= 200 || res.status <= 299) ? resolve : reject;
+                    resolution(this.config.returnBody ? res.json() : res);
+                });
         });
     }
 }
+
+if (window) (<any>window).ApiWrapper = ApiWrapper;
+export default ApiWrapper;

@@ -26,19 +26,24 @@ class ApiWrapper implements IApiWrapper {
      * @param method Method Type
      * @param data Request body
      */
-    request(url: string, method: Method, data: any) {
+    request(url: string, method: Method, data?: any) {
         return new Promise(async (resolve, reject) => {
             return fetch(this.config.baseURL + url, {
                 headers: this.config.headers && this.config.headers(),
                 method,
                 mode: this.config.cors,
-                credentials: this.config.credentials
+                credentials: this.config.credentials,
+                body: (method !== Method.Get) ? data : undefined
             })
                 .then((res: Response) => {
                     let resolution = (res.status >= 200 || res.status <= 299) ? resolve : reject;
                     resolution(this.config.returnBody ? res.json() : res);
                 });
         });
+    }
+
+    get(url: string, query: any) {
+        this.request(url, Method.Get, query)
     }
 }
 

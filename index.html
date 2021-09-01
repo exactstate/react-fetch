@@ -14,9 +14,20 @@
     </style>
     <script src="./build/main.js"></script>
     <script>
-        const api = new window.ApiWrapper({ baseURL: 'https://libretranslate.de' });
-        api.request('/languages', 'get', null)
-            .then(res => console.log(res));
+        const api = new ApiWrapper({ 
+            baseURL: 'https://libretranslate.de',
+            verbose: true
+        });
+        
+  
+        api.post('/translate', {
+            q: "hello my friend, how are you?",
+            source: "en",
+            target: "es"
+        })
+            .catch(err => {
+                console.log(err);
+            });
     </script>
 </body>
 </html>

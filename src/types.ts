@@ -3,7 +3,9 @@ export interface IApiConfig {
     headers?: Function,
     credentials?: CredentialsOption,
     cors?: CorsOption,
-    returnBody?: boolean
+    returnBody?: boolean,
+    loadingState?: Array<any>,
+    verbose?: boolean
 }
 
 export interface IApiWrapper {
